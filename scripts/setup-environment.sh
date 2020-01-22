@@ -23,10 +23,23 @@ set -e
 
 # Setup user/group for FRR.
 log_msg "Setting up user/group for FRR"
-groupadd -r -g 92 frr
-groupadd -r -g 85 frrvty
-adduser --system --ingroup frr --home /var/run/frr \
-    --gecos "FRR suite" --shell /sbin/nologin frr
-usermod -a -G frrvty frr
+
+case $OS in
+alpine-*)
+	# Alpine uses different user management.
+	addgroup -S frr
+	addgroup -S frrvty
+	adduser -S -D -h /var/run/frr -s /sbin/nologin -G frr -g frr frr
+	adduser frr frrvty
+	;;
+
+*)
+	groupadd -r -g 92 frr
+	groupadd -r -g 85 frrvty
+	adduser --system --ingroup frr --home /var/run/frr \
+	    --gecos "FRR suite" --shell /sbin/nologin frr
+	usermod -a -G frrvty frr
+	;;
+esac
 
 exit 0

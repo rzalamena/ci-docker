@@ -43,6 +43,16 @@ ubuntu-*)
 	# Static analyzer dependencies.
 	apt-get install -y clang-tools
 	;;
+
+alpine-*)
+	# FRR dependencies.
+	apk add autoconf automake libtool build-base json-c-dev python3-dev \
+	    readline-dev py3-sphinx c-ares-dev net-snmp-dev bison flex git \
+	    linux-headers bsd-compat-headers libcap-dev pytest texinfo
+
+	# libyang dependencies.
+	apk add curl cmake pcre-dev
+	;;
 esac
 
 exit 0

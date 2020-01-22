@@ -34,11 +34,25 @@ curl -#L \
 cd libyang-${LIBYANG_VERSION}
 mkdir build
 cd build
-cmake \
-    -D ENABLE_LYD_PRIV=1 \
-    -D CMAKE_BUILD_TYPE=Release \
-    -D CMAKE_INSTALL_PREFIX=/usr \
-    ..
+
+case $OS in
+alpine-*)
+	# Alpine does not do multilib, so set libyang dir to lib.
+	cmake \
+	    -D ENABLE_LYD_PRIV=1 \
+	    -D CMAKE_BUILD_TYPE=Release \
+	    -D CMAKE_INSTALL_PREFIX=/usr \
+	    -D CMAKE_INSTALL_LIBDIR=lib \
+	    ..
+	;;
+
+*)
+	cmake \
+	    -D ENABLE_LYD_PRIV=1 \
+	    -D CMAKE_BUILD_TYPE=Release \
+	    -D CMAKE_INSTALL_PREFIX=/usr \
+	    ..
+esac
 
 make -j$JOB_NUMBER
 make install

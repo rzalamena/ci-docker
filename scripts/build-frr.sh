@@ -25,26 +25,54 @@ set -e
 ./bootstrap.sh
 
 # Configure FRR build.
-./configure \
-    --enable-doc \
-    --enable-multipath=64 \
-    --enable-fpm \
-    --prefix=/usr \
-    --localstatedir=/var/run/frr \
-    --sysconfdir=/etc/frr \
-    --enable-exampledir=/usr/share/doc/frr/examples \
-    --sbindir=/usr/lib/frr \
-    --enable-user=frr \
-    --enable-group=frr \
-    --enable-vty-group=frrvty \
-    --enable-snmp=agentx \
-    --enable-sharpd \
-    --enable-vrrpd \
-    --enable-configfile-mask=0640 \
-    --enable-logfile-mask=0640 \
-    --enable-dev-build \
-    --enable-systemd=yes \
-    --with-pkg-git-version
+case $OS in
+alpine-*)
+	# Alpine doesn't use systemd.
+	./configure \
+	    --enable-doc \
+	    --enable-multipath=64 \
+	    --enable-fpm \
+	    --prefix=/usr \
+	    --localstatedir=/var/run/frr \
+	    --sysconfdir=/etc/frr \
+	    --enable-exampledir=/usr/share/doc/frr/examples \
+	    --sbindir=/usr/lib/frr \
+	    --enable-user=frr \
+	    --enable-group=frr \
+	    --enable-vty-group=frrvty \
+	    --enable-snmp=agentx \
+	    --enable-sharpd \
+	    --enable-vrrpd \
+	    --enable-configfile-mask=0640 \
+	    --enable-logfile-mask=0640 \
+	    --enable-dev-build \
+	    --enable-systemd=no \
+	    --with-pkg-git-version
+	    ;;
+
+*)
+	./configure \
+	    --enable-doc \
+	    --enable-multipath=64 \
+	    --enable-fpm \
+	    --prefix=/usr \
+	    --localstatedir=/var/run/frr \
+	    --sysconfdir=/etc/frr \
+	    --enable-exampledir=/usr/share/doc/frr/examples \
+	    --sbindir=/usr/lib/frr \
+	    --enable-user=frr \
+	    --enable-group=frr \
+	    --enable-vty-group=frrvty \
+	    --enable-snmp=agentx \
+	    --enable-sharpd \
+	    --enable-vrrpd \
+	    --enable-configfile-mask=0640 \
+	    --enable-logfile-mask=0640 \
+	    --enable-dev-build \
+	    --enable-systemd=yes \
+	    --with-pkg-git-version
+	    ;;
+esac
 
 # Compile everything.
 make -j$JOB_NUMBER
