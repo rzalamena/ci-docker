@@ -33,6 +33,15 @@ alpine-*)
 	adduser frr frrvty
 	;;
 
+centos-*)
+	# CentOS has different adduser syntax.
+	groupadd -r -g 92 frr
+	groupadd -r -g 85 frrvty
+	adduser --system --gid frr --home /var/run/frr \
+	    --comment "FRR suite" --shell /sbin/nologin frr
+	usermod -a -G frrvty frr
+	;;
+
 *)
 	groupadd -r -g 92 frr
 	groupadd -r -g 85 frrvty

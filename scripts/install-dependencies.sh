@@ -25,6 +25,18 @@ log_msg "Installing dependencies for $OS"
 
 # Install dependencies on OS basis.
 case $OS in
+centos-*)
+	# FRR dependencies.
+	dnf install --enablerepo=PowerTools -y git autoconf automake libtool \
+	    readline-devel texinfo pcre-devel net-snmp-devel pkgconfig groff \
+	    json-c-devel pam-devel bison flex c-ares-devel systemd-devel \
+	    libcap-devel python3-pytest python3-devel python3-sphinx make \
+	    patch diffutils
+	
+	# libyang dependencies.
+	dnf install --enablerepo=PowerTools -y cmake
+	;;
+
 ubuntu-*)
 	export DEBIAN_FRONTEND=noninteractive
 
