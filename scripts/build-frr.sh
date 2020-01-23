@@ -26,8 +26,8 @@ set -e
 
 # Configure FRR build.
 case $OS in
-alpine-*)
-	# Alpine doesn't use systemd.
+alpine-*|ubuntu-14.04)
+	# Alpine/Ubuntu 14.04 don't use systemd.
 	./configure \
 	    --enable-doc \
 	    --enable-multipath=64 \
