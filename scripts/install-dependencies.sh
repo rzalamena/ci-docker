@@ -25,6 +25,17 @@ log_msg "Installing dependencies for $OS"
 
 # Install dependencies on OS basis.
 case $OS in
+centos-7)
+	# FRR dependencies.
+	yum install -y git autoconf automake libtool readline-devel texinfo \
+	    net-snmp-devel groff pkgconfig json-c-devel pam-devel bison flex \
+	    python-pytest python-devel systemd-devel python-sphinx make \
+	    patch diffutils libcap-devel
+
+	# libyang dependencies.
+	yum install -y cmake
+	;;
+
 centos-*)
 	# FRR dependencies.
 	dnf install --enablerepo=PowerTools -y git autoconf automake libtool \
