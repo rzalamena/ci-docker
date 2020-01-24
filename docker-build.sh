@@ -18,6 +18,51 @@
 # Load environment variables and common functions.
 . "$(dirname "$0")/scripts/common.sh"
 
+# Handle script options.
+options=$(getopt 'pr:' $*)
+if [ $? -ne 0 ]; then
+	progname=$(basename "$0")
+
+	cat <<EOF
+Usage:
+    $progname [-p] [-r registry-address]
+
+Options:
+    -p: push newly created image to docker registry.
+    -r: tag the docker image with the docker registry address.
+        (example: docker-registry.home.net:5000)
+EOF
+	exit 1
+fi
+
+push_to_registry=0
+registry=
+
+set -- $options
+while [ $# -ne 0 ]; do
+	case "$1" in
+	-p)
+		push_to_registry=1
+		shift
+		;;
+
+	-r)
+		registry=$2
+		shift 2
+		;;
+
+	--)
+		shift
+		break
+		;;
+
+	*)
+		echo "Unhandled argument '$1'"
+		exit 1
+		;;
+	esac
+done
+
 # Exit on any command failure.
 set -e
 
@@ -49,8 +94,17 @@ done
 
 log_msg "Generating docker image for $selection"
 
+tag_name=frr-builder-$selection
+if [ ! -z $registry ]; then
+	tag_name=$registry/$tag_name
+fi
+
 docker build --compress --force-rm --pull \
-    --file $selection/Dockerfile --tag frr-builder-$selection \
+    --file $selection/Dockerfile --tag $tag_name \
     .
+
+if [ $push_to_registry -ne 0 ]; then
+	docker push $tag_name
+fi
 
 exit 0
