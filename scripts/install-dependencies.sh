@@ -79,7 +79,9 @@ ubuntu-*)
 	apt-get install -y curl cmake libpcre3-dev
 
 	# Static analyzer dependencies.
-	apt-get install -y clang-tools
+	if [ $OS == 'ubuntu-20.04' ]; then
+		apt-get install -y clang-tools
+	fi
 	;;
 
 alpine-*)
