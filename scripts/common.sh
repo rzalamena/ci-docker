@@ -30,6 +30,7 @@ log_msg() {
 
 # Enable/disable verbosity based on CI system signal.
 if [ $bamboo_ci_script_verbose ]; then
+	log_msg "Verbose mode enabled"
 	set -x
 fi
 
@@ -53,6 +54,8 @@ fi
 # ubuntu-20.04, ubuntu-18.04, etc...
 OS="${ID}-${VERSION_ID}"
 
+log_msg "Operating system: ${OS}"
+
 # Use the more friendly name JOB_NUMBER instead of bamboo's environment name.
 if [ "x$bamboo_capability_buildnode_cpus" == "x" ]; then
 	JOB_NUMBER=1
@@ -60,6 +63,10 @@ else
 	JOB_NUMBER=$bamboo_capability_buildnode_cpus
 fi
 
+log_msg "Number of build jobs: ${JOB_NUMBER}"
+
+# Select libyang version.
 LIBYANG_VERSION="1.0-r4"
+log_msg "libyang version: ${LIBYANG_VERSION}"
 
 # Don't ever exit here, otherwise scripts sourcing this will also quit.
