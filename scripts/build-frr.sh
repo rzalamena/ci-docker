@@ -75,7 +75,20 @@ alpine-*|ubuntu-14.04)
 esac
 
 # Compile everything.
-make -j$JOB_NUMBER
+if [ $STATIC_ANALYSIS -ne 0 ]; then
+	scan-build -o /build/static-analysis \
+	    -maxloop 8 \
+	    -enable-checker nullability.NullableDereferenced \
+	    -enable-checker nullability.NullablePassedToNonnull \
+	    -enable-checker nullability.NullableReturnedFromNonnull \
+	    -enable-checker security.FloatLoopCounter \
+	    -enable-checker valist.CopyToSelf \
+	    -enable-checker valist.Uninitialized \
+	    -enable-checker valist.Unterminated \
+	    make -j$JOB_NUMBER
+else
+	make -j$JOB_NUMBER
+fi
 
 # Attempt to install.
 make install

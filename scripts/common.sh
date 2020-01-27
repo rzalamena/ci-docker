@@ -69,4 +69,12 @@ log_msg "Number of build jobs: ${JOB_NUMBER}"
 LIBYANG_VERSION="1.0-r4"
 log_msg "libyang version: ${LIBYANG_VERSION}"
 
+# Check if we should use the slower `scan-build` to make FRR.
+if [ ! -z $bamboo_static_analysis ] && [ $bamboo_static_analysis -ne 0 ]; then
+	log_msg "Static analysis enabled"
+	STATIC_ANALYSIS=1
+else
+	STATIC_ANALYSIS=0
+fi
+
 # Don't ever exit here, otherwise scripts sourcing this will also quit.
